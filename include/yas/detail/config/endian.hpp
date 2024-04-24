@@ -37,6 +37,9 @@
 #define __yas__detail__config__endian_hpp
 
 /***************************************************************************/
+#if __has_include(<machine/endian.h>)
+#   include <machine/endian.h>
+#endif
 
 #if defined(__linux__) || defined(__ANDROID__) || defined(__EMSCRIPTEN__)
 #   include <endian.h>
@@ -53,6 +56,16 @@
 #   endif
 #elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
 #   include <sys/endian.h>
+#   if (_BYTE_ORDER == _LITTLE_ENDIAN)
+#       define __YAS_LITTLE_ENDIAN (1)
+#       define __YAS_BIG_ENDIAN (0)
+#   elif (_BYTE_ORDER == _BIG_ENDIAN)
+#       define __YAS_LITTLE_ENDIAN (0)
+#       define __YAS_BIG_ENDIAN (1)
+#   else
+#       error Unknown machine endianness detected.
+#   endif
+#elif defined(_BYTE_ORDER)
 #   if (_BYTE_ORDER == _LITTLE_ENDIAN)
 #       define __YAS_LITTLE_ENDIAN (1)
 #       define __YAS_BIG_ENDIAN (0)
